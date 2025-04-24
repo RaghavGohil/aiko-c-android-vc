@@ -15,6 +15,7 @@ import com.unity3d.player.UnityPlayerActivity
 class MainActivity : ComponentActivity() {
 
     private lateinit var overlayPermissionLauncher: ActivityResultLauncher<Intent>
+    private var unityLaunched = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +25,7 @@ class MainActivity : ComponentActivity() {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this)) {
                 startOverlayService()
                 launchUnity()
+                unityLaunched = true // Mark that Unity has been launched
             } else {
                 Toast.makeText(this, "Overlay permission is required to run the app", Toast.LENGTH_LONG).show()
                 finish()
@@ -34,7 +36,9 @@ class MainActivity : ComponentActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
             requestOverlayPermission()
         } else {
+            startOverlayService() // Start overlay initially
             launchUnity()
+            unityLaunched = true // Mark that Unity has been launched
         }
 
         // Register lifecycle observer
@@ -45,7 +49,7 @@ class MainActivity : ComponentActivity() {
     private fun launchUnity() {
         val intent = Intent(this, UnityPlayerActivity::class.java)
         startActivity(intent)
-        finish()
+        finish() // MainActivity finishes after launching Unity
     }
 
     private fun requestOverlayPermission() {
@@ -56,25 +60,26 @@ class MainActivity : ComponentActivity() {
 
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
-        if (level == TRIM_MEMORY_UI_HIDDEN) {
-            startOverlayService() // Start overlay when app is minimized
+        if (level == TRIM_MEMORY_UI_HIDDEN && unityLaunched) {
+            startOverlayService() // Start overlay when app is minimized AND Unity has launched
         }
     }
 
     override fun onResume() {
         super.onResume()
-        stopOverlayService() // Stop overlay when app is in foreground
+        // We don't want to stop the service if Unity is running in the foreground
+        // as MainActivity has already finished.
     }
 
     private fun startOverlayService() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this)) {
-            val intent = Intent(this, FloatingTamagotchiService::class.java)
+            val intent = Intent(this, OverlayService::class.java)
             startService(intent)
         }
     }
 
     private fun stopOverlayService() {
-        val intent = Intent(this, FloatingTamagotchiService::class.java)
+        val intent = Intent(this, OverlayService::class.java)
         stopService(intent)
     }
 }

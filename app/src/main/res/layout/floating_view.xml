@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="80dp"
+    android:layout_height="110dp" android:background="@android:color/transparent">
+
+    <ImageView
+        android:id="@+id/tamagotchiImage"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:contentDescription="Tamagotchi"
+        android:src="@drawable/tamagotchi"
+        android:layout_gravity="bottom|center_horizontal" />
+
+    <TextView
+        android:id="@+id/speechTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxWidth="70dp"
+        android:maxLines="2"
+        android:padding="8dp"
+        android:text="Tamagotchi says: Hello!"
+        android:textColor="@color/white"
+        android:textSize="12sp" />
+
+</FrameLayout>

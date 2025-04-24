@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
-        <service android:name=".FloatingTamagotchiService" android:exported="false" android:foregroundServiceType="mediaProjection"/>
+        <service android:name=".OverlayService" android:exported="false" android:foregroundServiceType="mediaProjection"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
